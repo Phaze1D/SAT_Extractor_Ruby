@@ -2,4 +2,4 @@
 RubyFacturasExt.iml
 *.log
 
- database.yml
+lib/config/database.yml

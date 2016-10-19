@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+$PATH = '/Users/david/Projects/NealsYard/RubyFacturasExt/lib/'
+
+require $PATH + 'init.rb'
+
+# Main
+def main
+  option_parsing
+
+  if @options[:upload]
+    upload
+  elsif @options[:cancel]
+    cancel
+  end
+end
+
+#Options parsing
+def option_parsing
+  @options = {:upload => nil, :cancel => nil}
+  parser = OptionParser.new do|opts|
+    opts.banner = "Usage: upload_fac [options]"
+    opts.on('-u', '--upload upload', 'Upload') do |upload|
+      @options[:upload] = upload;
+    end
+
+    opts.on('-c', '--cancel cancel', 'Cancel') do |cancel|
+      @options[:cancel] = cancel;
+    end
+
+    opts.on('-h', '--help', 'Displays Help') do
+      puts opts
+      exit
+    end
+  end
+
+  parser.parse!
+end
+
+# Uploads a file to database
+def upload
+    ActiveRecord::Base.transaction do
+      upload_controller = UploadController.new
+      upload_controller.begin_extraction(File.open @options[:upload])
+    end
+  # rescue ActiveRecord::StatementInvalid => exception
+  #   puts exception.message
+
+end
+
+# Updates a 'Comprobante' to be canceled
+def cancel
+  cancel_controller = CancelController.new
+  cancel_controller.cancel_comprobante(File.open @options[:cancel])
+end
+
+# Method main call
+main

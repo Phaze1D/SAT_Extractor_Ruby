@@ -1,0 +1,5 @@
+.idea/
+RubyFacturasExt.iml
+*.log
+
+ database.yml
